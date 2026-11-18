@@ -1,0 +1,321 @@
+{
+  "cell": 2,
+  "xMin": -734,
+  "zMin": -608,
+  "width": 729,
+  "height": 607,
+  "heightScale": 5.3,
+  "peopleScale": 15,
+  "states": [
+    {
+      "name": "Abia",
+      "label": "Abia",
+      "iso": "NG-AB",
+      "x": -119,
+      "z": 383,
+      "km2": 4832
+    },
+    {
+      "name": "Adamawa",
+      "label": "Adamawa",
+      "iso": "NG-AD",
+      "x": 415,
+      "z": -67,
+      "km2": 40320
+    },
+    {
+      "name": "Akwa Ibom",
+      "label": "Akwa Ibom",
+      "iso": "NG-AK",
+      "x": -95,
+      "z": 463,
+      "km2": 6892
+    },
+    {
+      "name": "Anambra",
+      "label": "Anambra",
+      "iso": "NG-AN",
+      "x": -187,
+      "z": 323,
+      "km2": 4808
+    },
+    {
+      "name": "Bauchi",
+      "label": "Bauchi",
+      "iso": "NG-BA",
+      "x": 103,
+      "z": -153,
+      "km2": 49824
+    },
+    {
+      "name": "Bayelsa",
+      "label": "Bayelsa",
+      "iso": "NG-BY",
+      "x": -301,
+      "z": 481,
+      "km2": 9456
+    },
+    {
+      "name": "Benue",
+      "label": "Benue",
+      "iso": "NG-BE",
+      "x": 7,
+      "z": 177,
+      "km2": 31008
+    },
+    {
+      "name": "Borno",
+      "label": "Borno",
+      "iso": "NG-BO",
+      "x": 515,
+      "z": -333,
+      "km2": 72884
+    },
+    {
+      "name": "Cross River",
+      "label": "Cross River",
+      "iso": "NG-CR",
+      "x": -29,
+      "z": 385,
+      "km2": 21088
+    },
+    {
+      "name": "Delta",
+      "label": "Delta",
+      "iso": "NG-DE",
+      "x": -313,
+      "z": 401,
+      "km2": 17100
+    },
+    {
+      "name": "Ebonyi",
+      "label": "Ebonyi",
+      "iso": "NG-EB",
+      "x": -69,
+      "z": 307,
+      "km2": 6520
+    },
+    {
+      "name": "Edo",
+      "label": "Edo",
+      "iso": "NG-ED",
+      "x": -271,
+      "z": 231,
+      "km2": 19692
+    },
+    {
+      "name": "Ekiti",
+      "label": "Ekiti",
+      "iso": "NG-EK",
+      "x": -363,
+      "z": 149,
+      "km2": 5844
+    },
+    {
+      "name": "Enugu",
+      "label": "Enugu",
+      "iso": "NG-EN",
+      "x": -139,
+      "z": 261,
+      "km2": 7632
+    },
+    {
+      "name": "Federal Capital Territory",
+      "label": "FCT",
+      "iso": "NG-FC",
+      "x": -169,
+      "z": 29,
+      "km2": 7600
+    },
+    {
+      "name": "Gombe",
+      "label": "Gombe",
+      "iso": "NG-GO",
+      "x": 281,
+      "z": -111,
+      "km2": 16708
+    },
+    {
+      "name": "Imo",
+      "label": "Imo",
+      "iso": "NG-IM",
+      "x": -179,
+      "z": 387,
+      "km2": 5124
+    },
+    {
+      "name": "Jigawa",
+      "label": "Jigawa",
+      "iso": "NG-JI",
+      "x": 91,
+      "z": -357,
+      "km2": 23544
+    },
+    {
+      "name": "Kaduna",
+      "label": "Kaduna",
+      "iso": "NG-KD",
+      "x": -93,
+      "z": -153,
+      "km2": 45336
+    },
+    {
+      "name": "Kano",
+      "label": "Kano",
+      "iso": "NG-KN",
+      "x": -19,
+      "z": -307,
+      "km2": 20296
+    },
+    {
+      "name": "Katsina",
+      "label": "Katsina",
+      "iso": "NG-KT",
+      "x": -117,
+      "z": -401,
+      "km2": 24340
+    },
+    {
+      "name": "Kebbi",
+      "label": "Kebbi",
+      "iso": "NG-KE",
+      "x": -509,
+      "z": -275,
+      "km2": 37560
+    },
+    {
+      "name": "Kogi",
+      "label": "Kogi",
+      "iso": "NG-KO",
+      "x": -173,
+      "z": 187,
+      "km2": 29036
+    },
+    {
+      "name": "Kwara",
+      "label": "Kwara",
+      "iso": "NG-KW",
+      "x": -407,
+      "z": 49,
+      "km2": 33744
+    },
+    {
+      "name": "Lagos",
+      "label": "Lagos",
+      "iso": "NG-LA",
+      "x": -591,
+      "z": 279,
+      "km2": 3772
+    },
+    {
+      "name": "Nasarawa",
+      "label": "Nasarawa",
+      "iso": "NG-NA",
+      "x": -39,
+      "z": 53,
+      "km2": 26404
+    },
+    {
+      "name": "Niger",
+      "label": "Niger",
+      "iso": "NG-NI",
+      "x": -337,
+      "z": -93,
+      "km2": 71520
+    },
+    {
+      "name": "Ogun",
+      "label": "Ogun",
+      "iso": "NG-OG",
+      "x": -613,
+      "z": 229,
+      "km2": 16936
+    },
+    {
+      "name": "Ondo",
+      "label": "Ondo",
+      "iso": "NG-ON",
+      "x": -411,
+      "z": 231,
+      "km2": 15180
+    },
+    {
+      "name": "Osun",
+      "label": "Osun",
+      "iso": "NG-OS",
+      "x": -457,
+      "z": 171,
+      "km2": 8656
+    },
+    {
+      "name": "Oyo",
+      "label": "Oyo",
+      "iso": "NG-OY",
+      "x": -553,
+      "z": 91,
+      "km2": 28028
+    },
+    {
+      "name": "Plateau",
+      "label": "Plateau",
+      "iso": "NG-PL",
+      "x": 127,
+      "z": 7,
+      "km2": 26080
+    },
+    {
+      "name": "Rivers",
+      "label": "Rivers",
+      "iso": "NG-RI",
+      "x": -209,
+      "z": 461,
+      "km2": 10248
+    },
+    {
+      "name": "Sokoto",
+      "label": "Sokoto",
+      "iso": "NG-SO",
+      "x": -357,
+      "z": -465,
+      "km2": 31260
+    },
+    {
+      "name": "Taraba",
+      "label": "Taraba",
+      "iso": "NG-TA",
+      "x": 189,
+      "z": 121,
+      "km2": 59156
+    },
+    {
+      "name": "Yobe",
+      "label": "Yobe",
+      "iso": "NG-YO",
+      "x": 307,
+      "z": -387,
+      "km2": 46072
+    },
+    {
+      "name": "Zamfara",
+      "label": "Zamfara",
+      "iso": "NG-ZA",
+      "x": -257,
+      "z": -335,
+      "km2": 34420
+    }
+  ],
+  "stats": {
+    "landKm2": 910328,
+    "inlandWaterKm2": 8592,
+    "highest": {
+      "metres": 2261,
+      "lat": 7.0467,
+      "lon": 11.7143
+    },
+    "population": 239967749,
+    "populationOnGrid": 239678357,
+    "densestSquare": 124401,
+    "populationYear": 2026
+  },
+  "generated": "2026-11-16"
+}

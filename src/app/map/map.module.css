@@ -1,0 +1,1026 @@
+/* The map page: a full-screen stage with panels over it. On a phone the
+   panel of controls is a sheet at the bottom. */
+
+.map {
+  --campus: #b99cff;
+  --mono: var(--font-jetbrains), ui-monospace, monospace;
+  --top: calc(var(--header) + env(safe-area-inset-top));
+  --dock: env(safe-area-inset-bottom, 0px);
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ink-900);
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------ the stage */
+
+.stage {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+.canvas,
+.labels {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.9s;
+}
+.canvas {
+  display: block;
+  outline-offset: -3px;
+  cursor: grab;
+}
+.canvas:active {
+  cursor: grabbing;
+}
+.labels {
+  overflow: hidden;
+  pointer-events: none;
+}
+.ready .canvas,
+.ready .labels {
+  opacity: 1;
+}
+.notice {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: opacity 0.6s;
+  pointer-events: none;
+}
+.ready .notice {
+  opacity: 0;
+}
+.noticeFailed {
+  text-transform: none;
+  font-size: 0.95rem;
+  letter-spacing: 0;
+}
+
+.hud {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgb(233 229 219 / 0.62);
+  pointer-events: none;
+}
+.hud b {
+  font-weight: 500;
+  color: #e9e5db;
+}
+.foot {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 1rem;
+  z-index: 3;
+  display: grid;
+  gap: 0.45rem;
+  justify-items: start;
+  max-width: min(44rem, calc(100% - 2.2rem));
+  pointer-events: none;
+}
+.status {
+  padding: 0.3rem 0.6rem 0.2rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--ink-800) 88%, transparent);
+  color: #e9e5db;
+}
+.statusFailed {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+.credit {
+  position: absolute;
+  right: 1.1rem;
+  bottom: 1rem;
+  z-index: 3;
+  max-width: 40rem;
+  text-align: right;
+}
+.textButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.sourcesCard {
+  position: absolute;
+  right: 1.1rem;
+  bottom: 3.2rem;
+  z-index: 6;
+  width: min(26rem, calc(100% - 2.2rem));
+  max-height: 60dvh;
+  overflow: auto;
+  padding: 1rem 1.1rem;
+}
+.sources {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.sources dt {
+  font-weight: 700;
+}
+.sources dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- cards */
+
+.card {
+  background: color-mix(in srgb, var(--ink-800) 90%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.3);
+}
+.card h2 {
+  margin: 0.35rem 0 0;
+  padding-right: 2rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #fff;
+}
+.card p {
+  margin: 0;
+}
+
+.left {
+  position: absolute;
+  left: 1.1rem;
+  top: calc(var(--top) + 0.6rem);
+  z-index: 5;
+  display: grid;
+  gap: 0.6rem;
+  width: min(21rem, calc(100% - 2.2rem));
+}
+
+.search {
+  position: relative;
+}
+.searchField {
+  width: 100%;
+  height: 2.7rem;
+  padding: 0.15rem 0.8rem 0 2.3rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ink-800) 90%, transparent)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%238a98a6' stroke-width='1.8'%3E%3Ccircle cx='7' cy='7' r='4.6'/%3E%3Cpath d='m10.6 10.6 3.4 3.4' stroke-linecap='round'/%3E%3C/svg%3E")
+    no-repeat 0.75rem 50%;
+  backdrop-filter: blur(12px);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+}
+.searchField::placeholder {
+  color: var(--muted);
+}
+.searchField:focus {
+  outline: 2px solid var(--signal);
+  outline-offset: 0;
+  border-color: transparent;
+}
+.searchNote {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--signal);
+}
+.results {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  max-height: min(22rem, 50dvh);
+  overflow: auto;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink-800) 96%, transparent);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.35);
+}
+.results li {
+  display: grid;
+  gap: 0.1rem;
+  min-height: 2.6rem;
+  padding: 0.45rem 0.6rem 0.4rem;
+  border-radius: var(--radius);
+  font-size: 0.93rem;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.results li .mono {
+  font-size: 0.62rem;
+}
+.results li[aria-selected="true"],
+.results li:hover {
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+}
+.results .resultsEmpty {
+  color: var(--muted);
+  font-weight: 500;
+  cursor: default;
+}
+
+.place,
+.overhead {
+  position: relative;
+  padding: 1.1rem 1.2rem 1.15rem;
+}
+.blurb {
+  margin-top: 0.6rem !important;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin: 1rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.facts dd {
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem !important;
+}
+.actions :global(.button) {
+  min-height: 2.4rem;
+  padding: 0.5em 0.9em 0.4em;
+  font-size: 0.92rem;
+}
+.links {
+  margin-top: 0.9rem !important;
+  font-size: 0.93rem;
+}
+.close {
+  position: absolute;
+  right: 0.6rem;
+  top: 0.6rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.close:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+.overhead h2 {
+  font-size: 1.15rem;
+}
+.overheadStatus {
+  margin-top: 0.55rem !important;
+  font-size: 0.93rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.scenes {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.scene {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr;
+  gap: 0.7rem;
+  align-items: center;
+}
+.scene img,
+.sceneEmpty {
+  display: grid;
+  place-items: center;
+  width: 4.6rem;
+  height: 4.6rem;
+  object-fit: cover;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.scene > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.scene strong {
+  font-size: 0.95rem;
+}
+.scene > span:last-child span {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+.overheadCredit {
+  margin-top: 0.85rem !important;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------- controls */
+
+.controls {
+  position: absolute;
+  right: 1.1rem;
+  top: calc(var(--top) + 0.6rem);
+  z-index: 5;
+  width: 18.5rem;
+  max-height: calc(100dvh - var(--top) - 4.5rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.controls summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.75rem 1.1rem 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  touch-action: manipulation;
+}
+.controls summary::-webkit-details-marker {
+  display: none;
+}
+.controls summary svg {
+  transition: rotate 0.2s;
+}
+.controls[open] summary svg {
+  rotate: 180deg;
+}
+.controlsBody {
+  display: grid;
+  gap: 1.15rem;
+  padding: 0.35rem 1.1rem 1.2rem;
+}
+.controlsBody fieldset {
+  margin: 0;
+  padding: 0.95rem 0 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+.controlsBody legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0.45rem;
+}
+.controlsBody legend + * {
+  clear: both;
+}
+.value {
+  font-family: var(--mono);
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.note {
+  margin-top: 0.5rem !important;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.now {
+  margin-top: 0.7rem;
+  padding: 0.45em 0.8em 0.35em;
+  font-size: 0.88rem;
+}
+.slider {
+  display: grid;
+  gap: 0.1rem;
+  margin-top: 0.6rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+.slider input,
+.controls input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--signal);
+}
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.segmented label {
+  position: relative;
+  cursor: pointer;
+}
+.segmented input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.segmented span {
+  display: block;
+  padding: 0.45rem 0 0.35rem;
+  text-align: center;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.segmented input:checked + span {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+.segmented input:focus-visible + span {
+  outline: 2px solid var(--text);
+  outline-offset: -3px;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  font-size: 0.93rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.check input {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: var(--signal);
+}
+.checkFirst {
+  margin-top: 0.2rem;
+}
+.check + .check {
+  margin-top: 0.55rem;
+}
+.swatch {
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: -0.1rem;
+}
+.swatchUniversity {
+  background: var(--campus);
+}
+.swatchLandmark {
+  rotate: 45deg;
+  background: var(--signal);
+}
+
+.legend {
+  padding-top: 0.95rem;
+  border-top: 1px solid var(--line);
+}
+.ramp {
+  height: 0.7rem;
+  margin-top: 0.5rem;
+  border-radius: 2px;
+}
+.scale {
+  position: relative;
+  height: 1.1rem;
+  margin-top: 0.3rem;
+  font-size: 0.6rem !important;
+}
+.scale span {
+  position: absolute;
+  top: 0;
+  translate: -50% 0;
+  white-space: nowrap;
+}
+.scale span:first-child {
+  translate: 0 0;
+}
+.scale span:last-child {
+  translate: -100% 0;
+}
+.bands {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 0.8rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.84rem;
+}
+.bands li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.bands span {
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 2px;
+}
+.lane {
+  display: inline-block;
+  width: 1.1rem;
+  height: 0.3rem;
+  margin: 0 0.15rem 0.12rem 0.1rem;
+  border-radius: 1px;
+  vertical-align: middle;
+}
+.phoneOnly {
+  display: none;
+}
+.report {
+  margin: 0 !important;
+  padding-top: 0.95rem;
+  border-top: 1px solid var(--line);
+}
+.report button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------- nudges */
+
+.nudge {
+  position: absolute;
+  /* Beside the controls, not under them. */
+  right: calc(18.5rem + 2.2rem);
+  bottom: 3.4rem;
+  z-index: 4;
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink-800) 90%, transparent);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+.nudge button {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+}
+.nudge button + button {
+  border-top: 1px solid var(--line);
+}
+.nudge button:hover {
+  background: color-mix(in srgb, var(--text) 10%, transparent);
+}
+.nudge button:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -3px;
+}
+.nudge button[aria-pressed="true"] {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+
+/* ---------------------------------------------------------------- phone */
+
+@media (max-width: 720px) {
+  .map {
+    --top: calc(3.6rem + env(safe-area-inset-top));
+    --controls-bar: 3.4rem;
+  }
+  .left {
+    left: 0.75rem;
+    top: calc(var(--top) + 0.45rem);
+    width: calc(100% - 1.5rem);
+    max-height: calc(100dvh - var(--top) - var(--controls-bar) - var(--dock) - 1.5rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    pointer-events: none;
+  }
+  .left > * {
+    pointer-events: auto;
+  }
+  .place,
+  .overhead {
+    max-height: min(42dvh, 22rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 1rem 1rem 1.05rem;
+  }
+  .card h2 {
+    font-size: 1.2rem;
+  }
+  .close {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .controls {
+    inset: auto 0 0;
+    width: auto;
+    max-height: min(56dvh, calc(100dvh - var(--top) - 3rem));
+    padding-bottom: var(--dock);
+    border-radius: 14px 14px 0 0;
+    border-width: 1px 0 0;
+    box-shadow: 0 -12px 40px rgb(0 0 0 / 0.35);
+  }
+  .controls summary {
+    position: relative;
+    justify-content: center;
+    min-height: var(--controls-bar);
+    padding: 1.2rem 2.6rem 0.9rem;
+    font-size: 0.95rem;
+  }
+  .controls summary::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0.45rem;
+    width: 2.4rem;
+    height: 0.28rem;
+    translate: -50% 0;
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--text) 28%, transparent);
+  }
+  .controls summary svg {
+    position: absolute;
+    right: 1.1rem;
+    top: 50%;
+    translate: 0 -35%;
+  }
+  .controls:not([open]) {
+    overflow: visible;
+  }
+  .foot {
+    left: 0.75rem;
+    bottom: calc(var(--controls-bar) + var(--dock) + 0.65rem);
+    max-width: calc(100% - 5.2rem);
+  }
+  .foot .hud {
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+  /* The sources are in the sheet on a phone. */
+  .credit,
+  .sourcesCard {
+    display: none;
+  }
+  .phoneOnly {
+    display: block;
+  }
+  /* Pinching does the rest on a phone. The way down to the streets stays. */
+  .nudge {
+    right: 0.75rem;
+    bottom: calc(var(--controls-bar) + var(--dock) + 0.65rem);
+  }
+  .nudge button {
+    width: 2.85rem;
+    height: 2.85rem;
+  }
+  .nudge .extra {
+    display: none;
+  }
+  .check,
+  .slider,
+  .segmented span {
+    min-height: 2.5rem;
+  }
+  .segmented span {
+    display: grid;
+    place-items: center;
+    padding: 0.55rem 0.4rem;
+  }
+}
+
+/* ------------------------------------------------- names over the map */
+/* The engine (src/lib/map/labels.ts) makes these elements and moves them. */
+
+.labels :global(.map-label) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0.1rem 0.3rem;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-family: var(--font-overpass), system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+  text-shadow:
+    0 1px 2px rgb(6 14 22 / 0.95),
+    0 0 8px rgb(6 14 22 / 0.8);
+  pointer-events: auto;
+  transition: opacity 0.2s;
+  will-change: transform;
+}
+.labels :global(button.map-label) {
+  cursor: pointer;
+}
+.labels :global(button.map-label:hover) {
+  color: var(--signal);
+}
+/* Hidden names also leave the accessibility tree, once they have faded. */
+.labels :global(.map-label.is-hidden) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    visibility 0s 0.2s;
+}
+.labels :global(.map-label--city),
+.labels :global(.map-label--landmark),
+.labels :global(.map-label--university) {
+  translate: -50% calc(-100% - 8px);
+}
+.labels :global(.map-label--city::after),
+.labels :global(.map-label--landmark::after),
+.labels :global(.map-label--university::after) {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 4px);
+  width: 6px;
+  height: 6px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgb(6 14 22 / 0.7);
+}
+.labels :global(.map-label--landmark) {
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.76rem;
+  color: #e8e2d3;
+}
+.labels :global(.map-label--landmark::after) {
+  border-radius: 0;
+  rotate: 45deg;
+  width: 5px;
+  height: 5px;
+  background: var(--signal);
+}
+.labels :global(.map-label--university) {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #e6dcff;
+}
+.labels :global(.map-label--university::after) {
+  border-radius: 0;
+  background: var(--campus);
+}
+/* A place with no room for its name is a dot. Pointing at it gives the name. */
+.labels :global(.map-label.is-dot) {
+  z-index: 0;
+  padding: 0;
+}
+.labels :global(.map-label.is-dot::before) {
+  content: "";
+  position: absolute;
+  left: -11px;
+  top: -3px;
+  width: 22px;
+  height: 22px;
+}
+.labels :global(.map-label.is-dot .map-label__name) {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  translate: -50% 0;
+  padding: 0.2rem 0.45rem 0.12rem;
+  border-radius: 3px;
+  background: rgb(6 14 22 / 0.88);
+  color: #fff;
+  font-style: normal;
+  white-space: nowrap;
+  text-shadow: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.labels :global(.map-label.is-dot:hover),
+.labels :global(.map-label.is-dot:focus-visible) {
+  z-index: 3;
+}
+.labels :global(.map-label.is-dot:hover .map-label__name),
+.labels :global(.map-label.is-dot:focus-visible .map-label__name) {
+  opacity: 1;
+  visibility: visible;
+}
+.labels :global(button.map-label.is-dot:hover::after) {
+  scale: 1.5;
+}
+.labels :global(.map-label--state) {
+  translate: -50% -50%;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.72);
+}
+
+.labels :global(.map-label--water) {
+  translate: -50% -50%;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: #9fd0f0;
+}
+
+/* Street level. Street names are written along their street. */
+.labels :global(.map-label--street),
+.labels :global(.map-label--canal),
+.labels :global(.map-label--hood),
+.labels :global(.map-label--building),
+.labels :global(.map-label--area) {
+  translate: -50% -50%;
+  padding: 0 0.2rem;
+}
+.labels :global(.map-label--street) {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.labels :global(.map-label--canal) {
+  font-size: 0.7rem;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: #d3ebfb;
+}
+.labels :global(.map-label--hood) {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.82);
+}
+.labels :global(.map-label--building) {
+  font-size: 0.7rem;
+  font-style: italic;
+  font-weight: 500;
+  color: #f3ead6;
+}
+.labels :global(.map-label--area) {
+  font-size: 0.7rem;
+  font-style: italic;
+  font-weight: 600;
+  color: #dcf2c4;
+}
+.labels :global(.map-label--station),
+.labels :global(.map-label--civic),
+.labels :global(.map-label--campus),
+.labels :global(.map-label--pin) {
+  translate: -50% calc(-100% - 9px);
+}
+.labels :global(.map-label--station::after),
+.labels :global(.map-label--civic::after),
+.labels :global(.map-label--campus::after),
+.labels :global(.map-label--pin::after) {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 3px);
+  width: 6px;
+  height: 6px;
+  translate: -50% 0;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgb(6 14 22 / 0.7);
+}
+.labels :global(.map-label--station) {
+  font-size: 0.72rem;
+}
+/* The local government office, a university and the pin of a search are signs. */
+.labels :global(.map-label--civic),
+.labels :global(.map-label--campus),
+.labels :global(.map-label--pin) {
+  padding: 0.24rem 0.5rem 0.14rem;
+  border-radius: 3px;
+  background: var(--signal);
+  color: var(--signal-ink);
+  font-size: 0.72rem;
+  text-shadow: none;
+  box-shadow: 0 2px 10px rgb(6 14 22 / 0.45);
+}
+.labels :global(.map-label--civic::after),
+.labels :global(.map-label--campus::after),
+.labels :global(.map-label--pin::after) {
+  top: 100%;
+  width: 2px;
+  height: 9px;
+  background: var(--signal);
+  box-shadow: none;
+}
+.labels :global(.map-label--campus) {
+  background: var(--campus);
+  color: #1c1140;
+}
+.labels :global(.map-label--campus::after) {
+  background: var(--campus);
+}
+.labels :global(.map-label--pin) {
+  background: #fff;
+  color: #10202e;
+}
+.labels :global(.map-label--pin::after) {
+  background: #fff;
+}
+
+/* The country marker on the globe: a sign above a ring that pings. */
+.labels :global(.map-label--country) {
+  translate: -50% calc(-100% - 22px);
+  padding: 0.28rem 0.6rem 0.18rem;
+  border-radius: 3px;
+  background: var(--signal);
+  color: var(--signal-ink);
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  text-shadow: none;
+}
+.labels :global(.map-label--country::before),
+.labels :global(.map-label--country::after) {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 22px);
+  width: 22px;
+  height: 22px;
+  translate: -50% -50%;
+  border: 2px solid var(--signal);
+  border-radius: 50%;
+}
+.labels :global(.map-label--country::before) {
+  animation: ping 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+@keyframes ping {
+  from {
+    scale: 1;
+    opacity: 0.9;
+  }
+  to {
+    scale: 3.2;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .labels :global(.map-label--country::before) {
+    animation: none;
+  }
+}

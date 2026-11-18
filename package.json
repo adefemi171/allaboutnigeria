@@ -1,0 +1,40 @@
+{
+  "name": "allaboutnigeria",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "fetch-lagos": "node scripts/fetch-lagos-osm.mjs",
+    "voxelize-lagos": "node scripts/build-lagos-voxels.mjs",
+    "voxelize-states": "node scripts/build-city-voxels.mjs states",
+    "voxelize-campuses": "node scripts/build-city-voxels.mjs campuses",
+    "data:map": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-map-data.mjs"
+  },
+  "dependencies": {
+    "@mapbox/vector-tile": "^3.0.0",
+    "clsx": "^2.1.1",
+    "earcut": "^3.2.4",
+    "lucide-react": "^0.511.0",
+    "next": "^15.3.0",
+    "pbf": "^5.1.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "satellite.js": "^6.0.2",
+    "tailwind-merge": "^3.3.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/three": "^0.187.0",
+    "geotiff": "^3.0.5",
+    "pngjs": "^7.0.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.8.0"
+  }
+}

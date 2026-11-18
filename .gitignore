@@ -1,0 +1,23 @@
+node_modules
+.next
+.npm-cache
+out
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+data/raw
+
+# visitor submissions (contact, newsletter, feedback)
+data/contact
+data/newsletter
+data/feedback
+.DS_Store
+._*
+node_modules/
+.next/
+.astro/
+dist/
+.cache/
+*.tsbuildinfo
+.env*
+!.env.example

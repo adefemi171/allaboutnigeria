@@ -46,29 +46,39 @@ export function openScene(
 
   loading?.abort();
   const { signal } = (loading = new AbortController());
-  dialog.addEventListener("close", () => loading?.abort(), { once: true });
+  dialog.addEventListener("close", () => loading?.abort(), { once: true, signal });
   let detail: "loading" | "ready" | "failed" = scene.collection ? "loading" : "failed";
 
-  const show = (view: View) => {
+  let view: View = "closeup";
+  const show = (next: View) => {
+    view = next;
     const near = view === "closeup";
     for (const button of buttons) {
       button.setAttribute("aria-pressed", String(button.dataset.sceneView === view));
     }
     close.hidden = !near || detail !== "ready";
     // The frame stands in while the close-up loads.
-    img.hidden = !close.hidden || !scene.thumbnail;
+    const previewReady = Boolean(scene.thumbnail && img.naturalWidth);
+    const previewPending = Boolean(scene.thumbnail && !img.complete);
+    img.hidden = !close.hidden || !previewReady;
     const text =
       near && detail === "loading"
-        ? "Fetching the close-up from the archive. Meanwhile, the whole frame."
+        ? previewReady
+          ? "Loading the close-up. The full scene is shown below."
+          : "Loading the close-up…"
         : near && detail === "ready"
           ? `${place.label}, ${CLOSEUP_KM} km across, cut from the satellite's ${scene.metres} m picture. The ring marks the spot.`
-          : scene.daily
-            ? `${place.label} in the middle of the satellite's picture of that day, 240 km across.`
-            : scene.thumbnail
-              ? `The whole frame the satellite took, about ${scene.metres === 10 ? 110 : 185} km across.`
-              : "The archive has no preview of this scene to show here.";
+          : previewPending
+            ? "Loading the preview…"
+            : !previewReady
+              ? "Preview unavailable. You can open the archive record below."
+              : scene.daily
+                ? `${place.label} in the middle of the satellite's picture of that day, 240 km across.`
+                : `The whole frame the satellite took, about ${scene.metres === 10 ? 110 : 185} km across.`;
     note.replaceChildren(`${text} `, record);
   };
+  img.addEventListener("load", () => show(view), { signal });
+  img.addEventListener("error", () => show(view), { signal });
   for (const button of buttons) {
     button.onclick = () => show(button.dataset.sceneView as View);
   }
@@ -83,7 +93,7 @@ export function openScene(
       if (signal.aborted) return;
       drawCloseup(canvas, pin, found);
       detail = "ready";
-      show("closeup");
+      show(view);
     })
     .catch(() => {
       if (signal.aborted) return;

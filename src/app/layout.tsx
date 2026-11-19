@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Overpass, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
 
-const overpass = Overpass({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const overpass = localFont({
+  src: "./fonts/overpass-latin-wght-normal.woff2",
+  weight: "400 800",
   variable: "--font-overpass",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+const jetbrainsMono = localFont({
+  src: "./fonts/jetbrains-mono-latin-wght-normal.woff2",
+  weight: "100 800",
   variable: "--font-jetbrains",
 });
 
